@@ -57,4 +57,4 @@ GitHub Release publication does not publish to Homebrew or crates.io. Homebrew d
 
 For the current `0.x` series, use a patch increment for compatible fixes and a minor increment for breaking CLI changes or larger feature releases. Keep changes to `--english` and `--status` backward compatible when possible.
 
-If older versions eventually need parallel maintenance, create `release/X.Y` from the corresponding release tag. Otherwise, use `main` and short-lived branches.
+If older versions eventually need parallel maintenance, create `release/X.Y` from the corresponding release tag. The current Release workflow requires tagged commits to be contained in `main`; adapt and validate it before publishing from a separate maintenance branch. Otherwise, use `main` and short-lived branches.
