@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: macOS (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Check formatting
+        run: cargo fmt --check
+      - name: Run Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+      - name: Build
+        run: cargo build --release --locked
+      - name: Check CLI behavior
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import subprocess
+
+          binary = "./target/release/im-switch"
+          cases = [
+              ([], 0),
+              (["--help"], 0),
+              (["-h"], 0),
+              (["--unknown"], 2),
+              (["--english", "--status"], 2),
+              (["ctrl+space"], 2),
+              (["--request-access"], 2),
+          ]
+          for args, expected in cases:
+              result = subprocess.run([binary, *args], capture_output=True, text=True)
+              assert result.returncode == expected, (args, result.returncode, result.stderr)
+              output = result.stdout if expected == 0 else result.stderr
+              assert "Usage: im-switch --english" in output, (args, output)
+          PY

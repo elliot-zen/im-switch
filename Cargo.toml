@@ -1,0 +1,14 @@
+[package]
+name = "im-switch"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+description = "Switch to an English input source or report the current input source on macOS"
+license = "MIT"
+repository = "https://github.com/elliot-zen/im-switch"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cidre = { version = "0.29.0", default-features = false, features = ["tis", "macos_10_15"] }
+
+[lints.rust]
+unsafe_code = "forbid"
