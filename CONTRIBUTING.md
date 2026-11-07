@@ -30,7 +30,30 @@ Keep source code, comments, and CLI output in English. Update both README langua
 
 `Cargo.toml` is the source of the application version. Keep `Cargo.lock` committed and in sync.
 
-Prepare a release through a pull request, then create an immutable `vX.Y.Z` tag on the tested `main` commit and publish the matching GitHub Release. Do not move published version tags. Package definitions must refer to a fixed release and its checksum.
+Prepare version changes through a pull request. Update `Cargo.toml`, run `cargo check` to refresh `Cargo.lock`, and commit both files. The first release can use the current `0.1.0` version.
+
+After the pull request is merged and CI passes on `main`, push a matching version tag:
+
+```sh
+git switch main
+git pull --ff-only
+git tag -a v0.1.0 -m "Release v0.1.0"
+git push origin v0.1.0
+```
+
+Replace `0.1.0` with the version being released. The Release workflow checks that the tag matches `Cargo.toml` and belongs to `main`, then rebuilds and checks the CLI on both Apple Silicon and Intel macOS runners. It publishes:
+
+- `im-switch-X.Y.Z-aarch64-apple-darwin.tar.gz`
+- `im-switch-X.Y.Z-x86_64-apple-darwin.tar.gz`
+- `SHA256SUMS`
+
+Each archive contains the executable, MIT license, and both README languages. All builds must succeed before GitHub Release publication. The workflow uses the built-in GitHub token and does not require a separate personal access token.
+
+The Release workflow also runs a build-only rehearsal for pull requests that change the workflow, scripts, or Cargo files. It can be run manually from Actions for a build-only rehearsal. Only a pushed version tag publishes a release. Rehearsal assets are available in the Actions run.
+
+Do not move published version tags. For a failed build before publication, fix the cause and rerun the failed workflow where appropriate; if the source must change, prepare a new version. Package definitions must refer to a fixed release and its checksum.
+
+GitHub Release publication does not publish to Homebrew or crates.io. Homebrew distribution needs a Formula and a separate update step.
 
 For the current `0.x` series, use a patch increment for compatible fixes and a minor increment for breaking CLI changes or larger feature releases. Keep changes to `--english` and `--status` backward compatible when possible.
 
