@@ -35,23 +35,4 @@ jobs:
         run: cargo build --release --locked
       - name: Check CLI behavior
         shell: bash
-        run: |
-          python3 - <<'PY'
-          import subprocess
-
-          binary = "./target/release/im-switch"
-          cases = [
-              ([], 0),
-              (["--help"], 0),
-              (["-h"], 0),
-              (["--unknown"], 2),
-              (["--english", "--status"], 2),
-              (["ctrl+space"], 2),
-              (["--request-access"], 2),
-          ]
-          for args, expected in cases:
-              result = subprocess.run([binary, *args], capture_output=True, text=True)
-              assert result.returncode == expected, (args, result.returncode, result.stderr)
-              output = result.stdout if expected == 0 else result.stderr
-              assert "Usage: im-switch --english" in output, (args, output)
-          PY
+        run: python3 scripts/check_cli.py

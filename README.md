@@ -8,6 +8,8 @@ A small macOS CLI that switches to English before starting terminal apps.
 
 Homebrew installation is planned. The install command will be added when the formula is published.
 
+Once a version is published, prebuilt archives are available on [GitHub Releases](https://github.com/elliot-zen/im-switch/releases): choose `aarch64-apple-darwin` for Apple Silicon or `x86_64-apple-darwin` for Intel. Extract the archive and install `im-switch` into a directory on your `PATH`.
+
 <details>
 <summary>Build from source</summary>
 

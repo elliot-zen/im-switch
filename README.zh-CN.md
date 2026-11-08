@@ -8,6 +8,8 @@
 
 计划支持 Homebrew 安装，Formula 发布后会补充具体安装命令。
 
+版本发布后，可从 [GitHub Releases](https://github.com/elliot-zen/im-switch/releases) 下载预编译包：Apple Silicon 选择 `aarch64-apple-darwin`，Intel 选择 `x86_64-apple-darwin`。解压后将 `im-switch` 安装到 `PATH` 中的目录。
+
 <details>
 <summary>从源码构建</summary>
 
